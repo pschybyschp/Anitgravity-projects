@@ -1,0 +1,24 @@
+# Environment and secrets
+.env
+**/credentials/
+**/client_secret.json
+**/credentials.json
+**/token.json
+
+# Temporary files
+**/.tmp/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
