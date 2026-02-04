@@ -103,13 +103,36 @@ def get_credentials():
     return creds
 
 
+def parse_json_file(filepath: str) -> list:
+    """Parse a JSON file with scraped data."""
+    with open(filepath, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    
+    # Handle different JSON structures
+    if isinstance(data, list):
+        return data
+    elif isinstance(data, dict):
+        if 'items' in data:
+            return data['items']
+        elif 'results' in data:
+            return data['results']
+        else:
+            return [data]
+    return []
+
+
 def parse_enriched_file(filepath: str) -> list:
     """
     Parse an enriched lead file to extract business data.
+    Supports both TXT and JSON formats.
     
-    Returns list of dicts with: name, website, phone, email, score, 
-    facebook, instagram, tiktok, twitter, linkedin
+    Returns list of dicts
     """
+    # Check if JSON
+    if filepath.endswith('.json'):
+        return parse_json_file(filepath)
+    
+    # Original TXT parsing for lead files
     businesses = []
     current_biz = {}
     in_email_section = False
@@ -193,6 +216,62 @@ def parse_enriched_file(filepath: str) -> list:
         businesses.append(current_biz)
     
     return businesses
+
+
+def export_generic_data(items: list, sheet_id: str = None, title: str = None) -> str:
+    """
+    Export any list of dicts to Google Sheets.
+    Automatically detects columns from data.
+    """
+    if not items:
+        return None
+    
+    credentials = get_credentials()
+    service = build('sheets', 'v4', credentials=credentials)
+    
+    # Create new sheet if no ID provided
+    if not sheet_id:
+        if not title:
+            title = f"Scrapper Export {datetime.now().strftime('%Y-%m-%d %H:%M')}"
+        
+        print(f"📊 Erstelle neues Sheet: {title}")
+        sheet_id = create_new_sheet(service, title)
+    
+    # Auto-detect headers from data
+    all_keys = set()
+    for item in items:
+        if isinstance(item, dict):
+            all_keys.update(item.keys())
+    
+    # Prioritize common columns
+    priority = ['text', 'title', 'name', 'link', 'url', 'type', 'description', 'email', 'phone']
+    headers = [k for k in priority if k in all_keys]
+    headers += [k for k in sorted(all_keys) if k not in headers]
+    
+    # Build rows
+    rows = [headers]
+    for item in items:
+        if isinstance(item, dict):
+            row = [str(item.get(h, '')) for h in headers]
+        else:
+            row = [str(item)]
+        rows.append(row)
+    
+    # Write data
+    print(f"📝 Schreibe {len(items)} Einträge...")
+    
+    service.spreadsheets().values().update(
+        spreadsheetId=sheet_id,
+        range='A1',
+        valueInputOption='RAW',
+        body={'values': rows}
+    ).execute()
+    
+    # Format
+    print("🎨 Formatiere Sheet...")
+    format_sheet(service, sheet_id)
+    
+    return f"https://docs.google.com/spreadsheets/d/{sheet_id}"
 
 
 def create_new_sheet(service, title: str) -> str:
@@ -366,22 +445,29 @@ Examples:
     
     print(f"\n📂 Lese Datei: {input_path}")
     
-    # Parse the enriched file
-    businesses = parse_enriched_file(input_path)
+    # Parse the file
+    items = parse_enriched_file(input_path)
     
-    if not businesses:
-        print("Keine Geschäfte zum Exportieren gefunden.")
+    if not items:
+        print("Keine Daten zum Exportieren gefunden.")
         sys.exit(0)
     
-    print(f"   Gefunden: {len(businesses)} Einträge\n")
+    print(f"   Gefunden: {len(items)} Einträge\n")
     
-    # Export to Google Sheets
+    # Export to Google Sheets - use generic export for JSON, specific for enriched TXT
     try:
-        sheet_url = export_to_sheet(
-            businesses,
-            sheet_id=args.sheet_id,
-            title=args.title
-        )
+        if input_path.endswith('.json'):
+            sheet_url = export_generic_data(
+                items,
+                sheet_id=args.sheet_id,
+                title=args.title
+            )
+        else:
+            sheet_url = export_to_sheet(
+                items,
+                sheet_id=args.sheet_id,
+                title=args.title
+            )
         
         print(f"\n✅ Export erfolgreich!")
         print(f"📊 Google Sheet: {sheet_url}\n")

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrapper Gringo 🌵</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌵 Scrapper Gringo</h1>
+            <p class="subtitle">Universal Web Scraper → Google Sheets</p>
+        </header>
+
+        <main>
+            <!-- Mode Selection -->
+            <div class="mode-toggle">
+                <button class="mode-btn active" data-mode="url">
+                    🌐 URL Scrapen
+                </button>
+                <button class="mode-btn" data-mode="places">
+                    📍 Places Suchen
+                </button>
+            </div>
+
+            <!-- URL Mode -->
+            <div id="url-mode" class="mode-content active">
+                <div class="input-group">
+                    <label for="url-input">Website URL</label>
+                    <input type="url" id="url-input" placeholder="https://example.com/page" />
+                </div>
+                <div class="input-group">
+                    <label for="extract-input">Was soll extrahiert werden?</label>
+                    <textarea id="extract-input" placeholder="z.B. Alle Tutorial-Headlines und deren Links&#10;oder: Produktnamen und Preise&#10;oder: Kontaktdaten (Email, Telefon)"></textarea>
+                </div>
+            </div>
+
+            <!-- Places Mode -->
+            <div id="places-mode" class="mode-content">
+                <div class="input-group">
+                    <label for="query-input">Geschäftstyp</label>
+                    <input type="text" id="query-input" placeholder="z.B. Tischler, Zahnarzt, Restaurant" />
+                </div>
+                <div class="input-group">
+                    <label for="location-input">Standort</label>
+                    <input type="text" id="location-input" placeholder="z.B. Tostedt, Hamburg, Berlin" />
+                </div>
+                <div class="input-group">
+                    <label for="limit-input">Anzahl Ergebnisse</label>
+                    <input type="number" id="limit-input" value="10" min="1" max="60" />
+                </div>
+            </div>
+
+            <!-- Sheets Config -->
+            <div class="sheets-config">
+                <div class="input-group">
+                    <label for="sheet-title">Google Sheet Titel</label>
+                    <input type="text" id="sheet-title" placeholder="Mein Scraping Export" />
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="actions">
+                <button id="scrape-btn" class="primary-btn">
+                    <span class="btn-icon">🚀</span>
+                    Scrapen & Exportieren
+                </button>
+            </div>
+
+            <!-- Status -->
+            <div id="status" class="status hidden">
+                <div class="status-icon">⏳</div>
+                <div class="status-text">Scraping läuft...</div>
+            </div>
+
+            <!-- Results -->
+            <div id="results" class="results hidden">
+                <h3>📊 Ergebnisse</h3>
+                <div class="result-stats">
+                    <div class="stat">
+                        <span class="stat-value" id="result-count">0</span>
+                        <span class="stat-label">Einträge</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="result-time">0s</span>
+                        <span class="stat-label">Dauer</span>
+                    </div>
+                </div>
+                <a id="sheets-link" href="#" target="_blank" class="sheets-link">
+                    📄 Google Sheet öffnen
+                </a>
+                <div id="preview" class="preview"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Scrapper Gringo v1.0 • DOE System</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
