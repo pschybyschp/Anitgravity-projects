@@ -9,6 +9,7 @@ const API_BASE = 'http://localhost:5000';
 // DOM Elements
 const modeButtons = document.querySelectorAll('.mode-btn');
 const urlMode = document.getElementById('url-mode');
+const deepMode = document.getElementById('deep-mode');
 const placesMode = document.getElementById('places-mode');
 const scrapeBtn = document.getElementById('scrape-btn');
 const statusDiv = document.getElementById('status');
@@ -22,17 +23,21 @@ modeButtons.forEach(btn => {
     btn.addEventListener('click', () => {
         const mode = btn.dataset.mode;
         currentMode = mode;
-        
+
         // Update button states
         modeButtons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        
+
         // Show/hide content
+        urlMode.classList.remove('active');
+        deepMode.classList.remove('active');
+        placesMode.classList.remove('active');
+
         if (mode === 'url') {
             urlMode.classList.add('active');
-            placesMode.classList.remove('active');
+        } else if (mode === 'deep') {
+            deepMode.classList.add('active');
         } else {
-            urlMode.classList.remove('active');
             placesMode.classList.add('active');
         }
     });
@@ -41,16 +46,16 @@ modeButtons.forEach(btn => {
 // Scrape Button Handler
 scrapeBtn.addEventListener('click', async () => {
     const sheetTitle = document.getElementById('sheet-title').value || 'Scrapper Gringo Export';
-    
+
     let requestData = {
-        mode: currentMode,
-        sheetTitle: sheetTitle
+        sheetTitle: sheetTitle,
+        exportToSheets: true
     };
-    
+
     if (currentMode === 'url') {
         const url = document.getElementById('url-input').value;
         const extract = document.getElementById('extract-input').value;
-        
+
         if (!url) {
             alert('Bitte gib eine URL ein');
             return;
@@ -59,14 +64,33 @@ scrapeBtn.addEventListener('click', async () => {
             alert('Bitte beschreibe was extrahiert werden soll');
             return;
         }
-        
+
+        requestData.mode = 'url';
         requestData.url = url;
         requestData.extract = extract;
+
+    } else if (currentMode === 'deep') {
+        const url = document.getElementById('deep-url-input').value;
+        const filter = document.getElementById('filter-input').value;
+        const stage2 = document.getElementById('stage2-input').value;
+        const limit = parseInt(document.getElementById('deep-limit-input').value) || 10;
+
+        if (!url) {
+            alert('Bitte gib eine Übersichts-URL ein');
+            return;
+        }
+
+        requestData.mode = 'deep';
+        requestData.url = url;
+        requestData.filter = filter || null;
+        requestData.stage2 = stage2 || 'description, tools';
+        requestData.limit = limit;
+
     } else {
         const query = document.getElementById('query-input').value;
         const location = document.getElementById('location-input').value;
         const limit = parseInt(document.getElementById('limit-input').value) || 10;
-        
+
         if (!query) {
             alert('Bitte gib einen Geschäftstyp ein');
             return;
@@ -75,19 +99,20 @@ scrapeBtn.addEventListener('click', async () => {
             alert('Bitte gib einen Standort ein');
             return;
         }
-        
+
+        requestData.mode = 'places';
         requestData.query = query;
         requestData.location = location;
         requestData.limit = limit;
     }
-    
+
     // Show loading state
     showStatus('loading', 'Scraping läuft...');
     scrapeBtn.disabled = true;
     resultsDiv.classList.add('hidden');
-    
+
     const startTime = Date.now();
-    
+
     try {
         const response = await fetch(`${API_BASE}/scrape`, {
             method: 'POST',
@@ -96,10 +121,10 @@ scrapeBtn.addEventListener('click', async () => {
             },
             body: JSON.stringify(requestData)
         });
-        
+
         const data = await response.json();
         const duration = ((Date.now() - startTime) / 1000).toFixed(1);
-        
+
         if (data.success) {
             showResults(data, duration);
         } else {
@@ -110,14 +135,14 @@ scrapeBtn.addEventListener('click', async () => {
         console.log('Backend not available, running in demo mode');
         simulateDemoResponse(requestData, startTime);
     }
-    
+
     scrapeBtn.disabled = false;
 });
 
 // Show Status
 function showStatus(type, message) {
     statusDiv.classList.remove('hidden', 'success', 'error');
-    
+
     let icon = '⏳';
     if (type === 'success') {
         icon = '✅';
@@ -126,7 +151,7 @@ function showStatus(type, message) {
         icon = '❌';
         statusDiv.classList.add('error');
     }
-    
+
     statusDiv.querySelector('.status-icon').textContent = icon;
     statusDiv.querySelector('.status-text').textContent = message;
 }
@@ -135,10 +160,10 @@ function showStatus(type, message) {
 function showResults(data, duration) {
     statusDiv.classList.add('hidden');
     resultsDiv.classList.remove('hidden');
-    
+
     document.getElementById('result-count').textContent = data.count || 0;
     document.getElementById('result-time').textContent = `${duration}s`;
-    
+
     const sheetsLink = document.getElementById('sheets-link');
     if (data.sheetUrl) {
         sheetsLink.href = data.sheetUrl;
@@ -146,12 +171,12 @@ function showResults(data, duration) {
     } else {
         sheetsLink.style.display = 'none';
     }
-    
+
     const preview = document.getElementById('preview');
     if (data.preview) {
         preview.textContent = data.preview;
     } else if (data.items) {
-        preview.textContent = data.items.slice(0, 5).map(item => 
+        preview.textContent = data.items.slice(0, 5).map(item =>
             typeof item === 'object' ? JSON.stringify(item, null, 2) : item
         ).join('\n---\n');
     }
@@ -160,7 +185,7 @@ function showResults(data, duration) {
 // Demo Response (when backend not running)
 function simulateDemoResponse(requestData, startTime) {
     const duration = ((Date.now() - startTime) / 1000).toFixed(1);
-    
+
     setTimeout(() => {
         if (requestData.mode === 'url') {
             showResults({

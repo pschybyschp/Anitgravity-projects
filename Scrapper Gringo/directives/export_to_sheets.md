@@ -1,61 +1,75 @@
-# Export Leads to Google Sheets
+# Directive: Export to Google Sheets
 
-## Goal
-Export enriched lead data to a Google Sheet for easy access and sharing.
+## Purpose
+Export scraped data to Google Sheets for easy access, sharing, and collaboration.
 
-## Inputs
-- Enriched lead data (from `enrich_leads.py` or JSON format)
-- Google Sheet ID (existing) or create new sheet
+## When to Use
+- After any scraping operation (URL, Deep Scrape, Places)
+- When user wants cloud-accessible deliverables
 
-## Outputs
-Google Sheet with columns:
-- Name
-- Website
-- Phone
-- Email
-- Score
-- Facebook link
-- Instagram link
-- TikTok link
-- X link
-- LinkedIn link
+## Input
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `input` | Yes | Path to data file (.txt or .json) |
+| `sheet-id` | No | Existing Sheet ID (creates new if omitted) |
+| `title` | No | Title for new sheet |
 
-## Tools/Scripts
-- `execution/enrich_leads.py` – Generate enriched data ✅
-- `execution/export_to_sheets.py` – Export to Google Sheets (to be created)
-
-## Setup Requirements
-
-### 1. Enable Google Sheets API
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Select your project (same as Places API)
-3. Enable "Google Sheets API"
-4. Enable "Google Drive API"
-
-### 2. Create Service Account
-1. Go to "Credentials" → "Create Credentials" → "Service Account"
-2. Name it (e.g., "lead-exporter")
-3. Download the JSON key file
-4. Save as `credentials.json` in project root
-
-### 3. Share Sheet with Service Account
-- Share your Google Sheet with the service account email
-- (e.g., lead-exporter@your-project.iam.gserviceaccount.com)
-
-## Usage
-
+## Execution
 ```bash
-# Export to new sheet
-python execution/export_to_sheets.py --input .tmp/enriched_*.txt
+# Export JSON (from scrape_url or deep_scrape)
+python execution/export_to_sheets.py --input ".tmp/scrape_*.json" --title "My Export"
 
-# Export to existing sheet
-python execution/export_to_sheets.py --input .tmp/enriched_*.txt --sheet-id "1abc..."
+# Export enriched leads
+python execution/export_to_sheets.py --input ".tmp/enriched_*.txt" --title "Leads Export"
 
-# Export with custom title
-python execution/export_to_sheets.py --input .tmp/enriched_*.txt --title "Tischler Leads Tostedt"
+# Update existing sheet
+python execution/export_to_sheets.py --input ".tmp/*.json" --sheet-id "1abc..."
 ```
+
+## Output
+- Google Sheet URL
+- Formatted table with:
+  - Bold header row
+  - Frozen header
+  - Auto-sized columns
+
+## Authentication
+
+### OAuth 2.0 Setup (Recommended)
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Enable "Google Sheets API" and "Google Drive API"
+3. Create OAuth 2.0 Client ID (Desktop App)
+4. Download JSON → save as `credentials/client_secret.json`
+5. First run opens browser for authentication
+6. Token saved to `credentials/token.json`
+
+### Add Test User
+If OAuth consent screen is in testing mode:
+1. Go to OAuth Consent Screen → Test users
+2. Add your Google email
+
+## Supported Input Formats
+| Format | Description |
+|--------|-------------|
+| `.json` | Auto-detects columns from data keys |
+| `.txt` | Parses enriched lead format (Name, Website, etc.) |
+
+## Learnings
+- **Service Account limitation**: Cannot create new Sheets without additional Drive delegation
+- **OAuth recommended**: Uses user's own Drive, no sharing needed
+- **JSON flexible**: Columns auto-detected from first item's keys
+
+## Error Handling
+- Missing credentials → Instructions printed
+- Token expired → Auto-refresh or re-authenticate
+- API quota exceeded → Wait and retry
+
+## Related
+- `scrape_url.md` for URL scraping
+- `deep_scrape.md` for two-stage scraping
+- `enrich_leads.md` for lead enrichment
 
 ---
 
-*Last updated: 2026-02-02*
-*Status: Implementation in progress*
+*Last updated: 2026-02-04*
+*Status: ✅ Implemented with OAuth*

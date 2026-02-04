@@ -1,26 +1,48 @@
-# Directives
+# Scrapper Gringo – Directives
 
-This folder contains **SOP-style instructions** written in Markdown.
+Diese Directives definieren die SOPs (Standard Operating Procedures) für Scrapper Gringo.
 
-## Purpose
+## Verfügbare Directives
 
-Directives define:
-- **Goals** – What needs to be accomplished
-- **Inputs** – What information is needed
-- **Tools/Scripts** – Which execution scripts to use
-- **Outputs** – Expected deliverables
-- **Edge Cases** – Known constraints and exceptions
+| Directive | Beschreibung | Script |
+|-----------|-------------|--------|
+| `scrape_url.md` | Einzelne URL scrapen | `scrape_url.py` |
+| `deep_scrape.md` | Zweistufiges Scraping (Liste → Details) | `deep_scrape.py` |
+| `scrape_gmb_listings.md` | Google Places API | `scrape_gmb.py` |
+| `enrich_leads.md` | Lead-Anreicherung | `enrich_leads.py` |
+| `export_to_sheets.md` | Google Sheets Export | `export_to_sheets.py` |
 
-## Guidelines
+## DOE Workflow
 
-- Write in plain language, as if briefing a competent teammate
-- Keep directives focused on a single task or workflow
-- Update directives when you discover new constraints or better approaches
-- Do not overwrite or delete directives unless explicitly instructed
+```
+┌────────────────────────────────────────────────────────────────┐
+│                        DOE LOOP                                │
+├────────────────────────────────────────────────────────────────┤
+│  DIRECTIVE     →     ORCHESTRATION     →     EXECUTION         │
+│  (directives/)       (AI Agent)              (execution/)      │
+│                                                                │
+│  Was soll               Wie wird            Deterministische   │
+│  getan werden?          entschieden?        Scripts führen aus │
+└────────────────────────────────────────────────────────────────┘
+```
 
-## File Naming
+## Nutzung
 
-Use descriptive, lowercase names with underscores:
-- `scrape_website.md`
-- `generate_report.md`
-- `upload_to_drive.md`
+Die AI liest zuerst die relevante Directive, dann führt sie das entsprechende Script aus.
+
+Beispiel:
+1. User: "Scrape alle Tutorials von snipki.de"
+2. AI liest: `deep_scrape.md`
+3. AI führt aus: `python execution/deep_scrape.py --url "..." --stage2 "..."`
+4. Ergebnis: JSON in `.tmp/`, optional Sheets-Export
+
+## Living Documents
+
+Directives werden kontinuierlich verbessert:
+- Neue Learnings dokumentiert
+- Edge Cases hinzugefügt
+- Fehlerbehandlung aktualisiert
+
+---
+
+*Letzte Aktualisierung: 2026-02-04*

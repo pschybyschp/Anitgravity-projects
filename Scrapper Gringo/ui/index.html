@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -18,10 +20,13 @@
             <!-- Mode Selection -->
             <div class="mode-toggle">
                 <button class="mode-btn active" data-mode="url">
-                    🌐 URL Scrapen
+                    🌐 URL
+                </button>
+                <button class="mode-btn" data-mode="deep">
+                    🔍 Deep Scrape
                 </button>
                 <button class="mode-btn" data-mode="places">
-                    📍 Places Suchen
+                    📍 Places
                 </button>
             </div>
 
@@ -33,7 +38,29 @@
                 </div>
                 <div class="input-group">
                     <label for="extract-input">Was soll extrahiert werden?</label>
-                    <textarea id="extract-input" placeholder="z.B. Alle Tutorial-Headlines und deren Links&#10;oder: Produktnamen und Preise&#10;oder: Kontaktdaten (Email, Telefon)"></textarea>
+                    <textarea id="extract-input"
+                        placeholder="z.B. Alle Headlines und deren Links&#10;oder: Produktnamen und Preise&#10;oder: Kontaktdaten (Email, Telefon)"></textarea>
+                </div>
+            </div>
+
+            <!-- Deep Scrape Mode -->
+            <div id="deep-mode" class="mode-content">
+                <div class="input-group">
+                    <label for="deep-url-input">Übersichts-URL (Stage 1)</label>
+                    <input type="url" id="deep-url-input" placeholder="https://snipki.de/alle-snipki-videos/" />
+                </div>
+                <div class="input-group">
+                    <label for="filter-input">URL-Filter (optional)</label>
+                    <input type="text" id="filter-input" placeholder="z.B. /videos/ oder /blog/" />
+                </div>
+                <div class="input-group">
+                    <label for="stage2-input">Was soll von jeder Unterseite extrahiert werden? (Stage 2)</label>
+                    <textarea id="stage2-input"
+                        placeholder="z.B. Beschreibung, verwendete Tools&#10;oder: Preis, Features, Bewertungen"></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="deep-limit-input">Max. Unterseiten</label>
+                    <input type="number" id="deep-limit-input" value="10" min="1" max="50" />
                 </div>
             </div>
 
@@ -102,4 +129,5 @@
 
     <script src="app.js"></script>
 </body>
+
 </html>
