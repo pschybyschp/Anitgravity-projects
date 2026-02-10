@@ -11,6 +11,7 @@ Diese Directives definieren die SOPs (Standard Operating Procedures) für Scrapp
 | `scrape_gmb_listings.md` | Google Places API | `scrape_gmb.py` |
 | `enrich_leads.md` | Lead-Anreicherung | `enrich_leads.py` |
 | `export_to_sheets.md` | Google Sheets Export | `export_to_sheets.py` |
+| `export_to_pdf.md` | Website → PDF Export | `export_to_pdf.py` |
 
 ## DOE Workflow
 

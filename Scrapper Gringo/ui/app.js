@@ -14,9 +14,17 @@ const placesMode = document.getElementById('places-mode');
 const scrapeBtn = document.getElementById('scrape-btn');
 const statusDiv = document.getElementById('status');
 const resultsDiv = document.getElementById('results');
+const exportConfig = document.getElementById('export-config');
+const browserModeSection = document.getElementById('browser-mode-section');
+const exportLabel = document.getElementById('export-label');
+const exportFilename = document.getElementById('export-filename');
+const exportSheetsRadio = document.getElementById('export-sheets');
+const exportPdfRadio = document.getElementById('export-pdf');
+const exportWordRadio = document.getElementById('export-word');
 
 // Current mode
 let currentMode = 'url';
+let exportFormat = 'sheets';
 
 // Mode Toggle
 modeButtons.forEach(btn => {
@@ -42,6 +50,30 @@ modeButtons.forEach(btn => {
         }
     });
 });
+
+// Export Format Toggle with Dynamic Labels
+function updateExportFormat() {
+    if (exportSheetsRadio.checked) {
+        exportFormat = 'sheets';
+        exportLabel.textContent = 'Google Sheet Titel';
+        exportFilename.placeholder = 'Mein Scraping Export';
+        browserModeSection.classList.add('hidden');
+    } else if (exportPdfRadio.checked) {
+        exportFormat = 'pdf';
+        exportLabel.textContent = 'PDF Dateiname';
+        exportFilename.placeholder = 'dokument.pdf';
+        browserModeSection.classList.remove('hidden');
+    } else if (exportWordRadio.checked) {
+        exportFormat = 'word';
+        exportLabel.textContent = 'Word Dateiname';
+        exportFilename.placeholder = 'dokument.docx';
+        browserModeSection.classList.remove('hidden');
+    }
+}
+
+exportSheetsRadio.addEventListener('change', updateExportFormat);
+exportPdfRadio.addEventListener('change', updateExportFormat);
+exportWordRadio.addEventListener('change', updateExportFormat);
 
 // Scrape Button Handler
 scrapeBtn.addEventListener('click', async () => {

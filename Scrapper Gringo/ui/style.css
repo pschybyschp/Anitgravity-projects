@@ -29,51 +29,73 @@ body {
 }
 
 .container {
-    max-width: 600px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem 1.5rem;
+    padding: 0.75rem 1.5rem;
 }
 
 header {
-    text-align: center;
-    margin-bottom: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
 }
 
 header h1 {
-    font-size: 2.5rem;
+    font-size: 1.5rem;
     font-weight: 700;
     background: var(--gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin-bottom: 0.5rem;
+    margin: 0;
 }
 
 .subtitle {
     color: var(--text-muted);
-    font-size: 1rem;
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+/* 2-Column Grid Layout */
+main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.left-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.right-column {
+    display: flex;
+    flex-direction: column;
 }
 
 /* Mode Toggle */
 .mode-toggle {
     display: flex;
     gap: 0.5rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.75rem;
     background: var(--bg-input);
     padding: 0.25rem;
-    border-radius: 12px;
+    border-radius: 10px;
 }
 
 .mode-btn {
     flex: 1;
-    padding: 0.875rem 1rem;
+    padding: 0.5rem 0.5rem;
     border: none;
     background: transparent;
     color: var(--text-muted);
-    font-size: 0.95rem;
+    font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
-    border-radius: 10px;
+    border-radius: 8px;
     transition: all 0.2s ease;
 }
 
@@ -98,32 +120,39 @@ header h1 {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Input Groups */
 .input-group {
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.75rem;
 }
 
 .input-group label {
     display: block;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     font-weight: 500;
     color: var(--text);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
 }
 
 .input-group input,
 .input-group textarea {
     width: 100%;
-    padding: 0.875rem 1rem;
+    padding: 0.5rem 0.75rem;
     background: var(--bg-input);
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: 8px;
     color: var(--text);
-    font-size: 1rem;
+    font-size: 0.85rem;
     font-family: inherit;
     transition: all 0.2s ease;
 }
@@ -141,8 +170,175 @@ header h1 {
 }
 
 .input-group textarea {
-    min-height: 100px;
+    min-height: 60px;
     resize: vertical;
+}
+
+/* Export Format Toggle */
+.export-format {
+    margin-bottom: 0.75rem;
+}
+
+.section-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+}
+
+.format-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.format-toggle input[type="radio"] {
+    display: none;
+}
+
+.format-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 0.65rem;
+    background: var(--bg-input);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+}
+
+.format-option::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--gradient);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+}
+
+.format-option:hover {
+    border-color: var(--primary-light);
+    background: var(--bg-card);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
+}
+
+.format-option:hover::before {
+    opacity: 0.1;
+}
+
+.format-toggle input[type="radio"]:checked+.format-option {
+    background: var(--gradient);
+    border-color: transparent;
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 6px 25px rgba(99, 102, 241, 0.4);
+}
+
+.format-toggle input[type="radio"]:checked+.format-option::before {
+    opacity: 1;
+}
+
+.format-option:active {
+    transform: scale(0.98);
+}
+
+.format-icon {
+    font-size: 1.25rem;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.2s ease;
+}
+
+.format-option:hover .format-icon {
+    transform: scale(1.1);
+}
+
+.format-text {
+    font-size: 0.85rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Export Config (unified) */
+.export-config {
+    background: var(--bg-card);
+    padding: 0.75rem;
+    border-radius: 10px;
+    margin-bottom: 0.75rem;
+    border: 1px solid var(--border);
+}
+
+.export-config.hidden {
+    display: none;
+}
+
+/* Checkbox Label */
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: auto;
+    cursor: pointer;
+}
+
+.info-tooltip {
+    cursor: help;
+    font-size: 0.85rem;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.info-tooltip:hover {
+    opacity: 1;
+}
+
+.help-text {
+    margin-top: 0.35rem;
+    margin-bottom: 0;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* PDF Config */
+.pdf-config {
+    background: var(--bg-card);
+    padding: 1.25rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border);
+}
+
+.pdf-config.hidden {
+    display: none;
+}
+
+.pdf-config label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.pdf-config input[type="checkbox"] {
+    width: auto;
+    cursor: pointer;
 }
 
 /* Sheets Config */
@@ -154,19 +350,23 @@ header h1 {
     border: 1px solid var(--border);
 }
 
+.sheets-config.hidden {
+    display: none;
+}
+
 /* Actions */
 .actions {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.75rem;
 }
 
 .primary-btn {
     width: 100%;
-    padding: 1rem 1.5rem;
+    padding: 0.65rem 1rem;
     background: var(--gradient);
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     color: white;
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
     display: flex;
@@ -217,8 +417,15 @@ header h1 {
 }
 
 @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
 }
 
 .status-text {
@@ -319,17 +526,129 @@ footer p {
 }
 
 /* Responsive */
-@media (max-width: 480px) {
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+
+/* Tablets and smaller (below 900px) */
+@media (max-width: 900px) {
     .container {
-        padding: 1.5rem 1rem;
+        max-width: 100%;
+        padding: 0.75rem 1rem;
     }
-    
+
+    /* Stack columns vertically */
+    main {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    header {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.25rem;
+    }
+
     header h1 {
-        font-size: 2rem;
+        font-size: 1.5rem;
     }
-    
-    .mode-btn {
+
+    .subtitle {
+        font-size: 0.75rem;
+    }
+
+    /* Format toggle in 3 columns still works */
+    .format-toggle {
+        gap: 0.5rem;
+    }
+
+    .format-option {
         padding: 0.75rem 0.5rem;
-        font-size: 0.85rem;
+    }
+
+    .format-text {
+        font-size: 0.8rem;
+    }
+}
+
+/* Mobile phones (below 600px) */
+@media (max-width: 600px) {
+    .container {
+        padding: 0.5rem 0.75rem;
+    }
+
+    header h1 {
+        font-size: 1.25rem;
+    }
+
+    .subtitle {
+        font-size: 0.7rem;
+    }
+
+    /* Mode buttons smaller */
+    .mode-btn {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.75rem;
+    }
+
+    /* Format toggle: stack or keep 3 cols but smaller */
+    .format-toggle {
+        gap: 0.4rem;
+    }
+
+    .format-option {
+        padding: 0.6rem 0.4rem;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .format-icon {
+        font-size: 1.1rem;
+    }
+
+    .format-text {
+        font-size: 0.7rem;
+    }
+
+    /* Inputs */
+    .input-group input,
+    .input-group textarea {
+        font-size: 0.8rem;
+        padding: 0.5rem 0.6rem;
+    }
+
+    .input-group label {
+        font-size: 0.7rem;
+    }
+
+    /* Button */
+    .primary-btn {
+        font-size: 0.9rem;
+        padding: 0.6rem 0.8rem;
+    }
+
+    .help-text {
+        font-size: 0.7rem;
+    }
+}
+
+/* Small mobile (below 400px) */
+@media (max-width: 400px) {
+    header h1 {
+        font-size: 1.1rem;
+    }
+
+    .mode-btn {
+        font-size: 0.7rem;
+        padding: 0.4rem 0.2rem;
+    }
+
+    .format-text {
+        display: none;
+        /* Hide text, show only icons */
+    }
+
+    .format-icon {
+        font-size: 1.3rem;
     }
 }

@@ -46,7 +46,29 @@ Scrapper Gringo/
 
 ## Quick Start
 
-### Web UI starten
+### 🚀 Einfachster Start (Empfohlen)
+
+**Option 1: .bat Datei (Kein Kommando nötig)**
+```bash
+# Einfach doppelklicken:
+Start UI.bat
+```
+
+**Option 2: Python Launcher**
+```bash
+python launch_ui.py
+```
+
+**Option 3: Als .exe kompilieren (einmalig)**
+```bash
+# .exe erstellen:
+python build_exe.py
+
+# Danach einfach doppelklicken:
+dist/ScrapperGringo.exe
+```
+
+### Klassischer Start (Web UI manuell)
 ```bash
 cd "Scrapper Gringo/ui"
 python -m http.server 8080
@@ -57,6 +79,9 @@ python -m http.server 8080
 ```bash
 # URL scrapen
 python execution/scrape_url.py --url "https://example.com" --extract "headlines"
+
+# PDF Export (NEU!)
+python execution/export_to_pdf.py --url "https://docs.site.com" --browser --output "docs.pdf"
 
 # Places suchen
 python execution/scrape_gmb.py -q "Tischler" -l "Tostedt" -n 10
